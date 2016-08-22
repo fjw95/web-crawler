@@ -44,8 +44,7 @@ func main() {
 	seedUrls := os.Args[1:]
 
 	for _, url := range seedUrls {
-		fetchURLSite(
-			getSiteURL(url))
+		getSiteURL(url)
 	}
 
 	//<-channel
