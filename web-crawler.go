@@ -6,13 +6,11 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	// "strings"
 	"sync"
 )
 
 const (
 	main_url = "http://ub.ac.id/akademik/fakultas"
-	// domain   = "ub.ac.id"
 )
 
 func removeDuplicates(elements []string) []string {
@@ -36,7 +34,6 @@ func removeDuplicates(elements []string) []string {
 
 func fetchSite(url string, wg *sync.WaitGroup) {
 
-	// defer close(chanIn)
 	defer wg.Done()
 	client := &http.Client{}
 	resp, err := client.Get(url)
@@ -48,7 +45,6 @@ func fetchSite(url string, wg *sync.WaitGroup) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//pattern, err := regexp.Compile(`<a\s+(?:[^>]*?\s+)?href="([^"]*)"`)
 	pattern := regexp.MustCompile(url + "[a-z]+")
 	bodyStr := string(respBody[:])
 	found := pattern.FindAllString(bodyStr, -1)
@@ -81,30 +77,23 @@ func getSiteURL(mainURL string, wg *sync.WaitGroup) {
 	var urlStr = pattern.FindAllString(bodyStr, -1)
 
 	for _, linkURL := range urlStr {
+		wg.Add(1)
+
 		var regexRep = regexp.MustCompile("en")
 		var strRep = regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
 
-		wg.Add(1)
 		go fetchSite(linkURL, wg)
-		// fmt.Println(linkURL)
+
 	}
 
 }
 
 func main() {
-	//channel := make(chan []string)
 
+	// Deklarasi variabel waitGroup
 	var wg sync.WaitGroup
 	getSiteURL(main_url, &wg)
 
 	wg.Wait()
-
-	//var url_list = <-channel
-
-	/*
-		for _, urlList := range url_list {
-			fmt.Println(urlList)
-		}
-	*/
 }
