@@ -13,6 +13,8 @@ const (
 	main_url = "http://ub.ac.id/akademik/fakultas"
 )
 
+var count int
+
 func removeDuplicates(elements []string) []string {
 	// Use map to record duplicates as we find them.
 	encountered := map[string]bool{}
@@ -54,6 +56,7 @@ func fetchSite(url string, wg *sync.WaitGroup) {
 
 	for _, urlList := range urls {
 		fmt.Println(urlList)
+		count++
 	}
 
 }
@@ -96,4 +99,5 @@ func main() {
 	getSiteURL(main_url, &wg)
 
 	wg.Wait()
+	fmt.Println("\nFound", count, "unique urls:\n")
 }
