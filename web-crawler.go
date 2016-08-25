@@ -14,6 +14,7 @@ const (
 )
 
 var count int
+var mu sync.Mutex
 
 func removeDuplicates(elements []string) []string {
 	// Use map to record duplicates as we find them.
@@ -21,10 +22,8 @@ func removeDuplicates(elements []string) []string {
 	result := []string{}
 
 	for v := range elements {
-		if encountered[elements[v]] == true {
-			// Do not add duplicate.
-		} else {
-			// Record this element as an encountered element.
+		if encountered[elements[v]] != true {
+			/// Record this element as an encountered element.
 			encountered[elements[v]] = true
 			// Append to result slice.
 			result = append(result, elements[v])
@@ -55,15 +54,15 @@ func fetchSite(url string, wg *sync.WaitGroup) {
 	urls = append(urls, url)
 
 	for _, urlList := range urls {
+		mu.Lock()
 		fmt.Println(urlList)
 		count++
+		mu.Unlock()
 	}
-
 }
 
 func getSiteURL(mainURL string, wg *sync.WaitGroup) {
 
-	defer wg.Done()
 	client := &http.Client{}
 	res, err := client.Get(mainURL)
 	if err != nil {
@@ -78,12 +77,12 @@ func getSiteURL(mainURL string, wg *sync.WaitGroup) {
 	bodyStr := string(body[:])
 	var pattern = regexp.MustCompile("http://" + "[a-z]+" + ".ub.ac.id/en")
 	var urlStr = pattern.FindAllString(bodyStr, -1)
+	var regexRep = regexp.MustCompile("en")
 
 	for _, linkURL := range urlStr {
 		wg.Add(1)
 
-		var regexRep = regexp.MustCompile("en")
-		var strRep = regexRep.ReplaceAllString(linkURL, "")
+		strRep := regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
 
 		go fetchSite(linkURL, wg)
