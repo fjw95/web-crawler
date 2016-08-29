@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/fjw95/web-crawler/util"
 	"regexp"
 	"sync"
 	"time"
+
+	"github.com/fjw95/web-crawler/util"
 )
 
 const (
@@ -15,7 +16,7 @@ const (
 var countChildUrl, countRootUrl int
 var mu sync.Mutex
 
-func fetchSite(url string, wg *sync.WaitGroup, done chan bool) {
+func fetchSite(url string, wg *sync.WaitGroup, slots chan bool) {
 	defer wg.Done()
 
 	respBody, _ := util.GetRespBody(url)
@@ -37,60 +38,53 @@ func fetchSite(url string, wg *sync.WaitGroup, done chan bool) {
 	fmt.Println("\n---> Found :", len(urls), "URL \nFrom : "+url+"\n")
 
 	<-time.After(3 * time.Second)
-	done <- true
+
+	// put back slot that occupied
+	slots <- true
 }
 
-func getSiteURL(mainURL string, wg *sync.WaitGroup, max int) {
+func getSiteURL(mainURL string, max int) {
 
-	concurrentGoroutines := make(chan []string, max)
-	done := make(chan bool)
-	waitForAllJobs := make(chan bool)
+	var wg sync.WaitGroup
 
+	// define "max" concurrent slots
+	concurrentGoroutines := make(chan bool, max)
 	defer close(concurrentGoroutines)
 
+	// fill initial slots
 	for i := 0; i < max; i++ {
-		concurrentGoroutines <- []string{}
+		concurrentGoroutines <- true
 	}
 
 	respBody, _ := util.GetRespBody(main_url)
-
 	bodyStr := string(respBody[:])
 	var pattern = regexp.MustCompile("http://" + "[a-z]+" + ".ub.ac.id/en")
 	var regexRep = regexp.MustCompile("en")
 	var urlStr = pattern.FindAllString(bodyStr, -1)
 
+	// sync with wait group
 	countRootUrl = len(urlStr)
-
 	wg.Add(countRootUrl)
 
-	go func() {
-		for i := 0; i < countRootUrl; i++ {
-			<-done
-
-			concurrentGoroutines <- []string{}
-		}
-		waitForAllJobs <- true
-	}()
-
-	for _, linkURL := range urlStr {
+	for i, linkURL := range urlStr {
 		strRep := regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
 
+		// wait available slots
 		<-concurrentGoroutines
-		fmt.Println("Launch URL : " + linkURL + "\n")
-		go fetchSite(linkURL, wg, done)
-	}
-	<-waitForAllJobs
 
+		fmt.Printf("%d. Launch URL : %s \n", i+1, linkURL)
+		go fetchSite(linkURL, &wg, concurrentGoroutines)
+	}
+
+	wg.Wait()
 }
 
 func main() {
 
 	maxGoroutinesSpawn := 3
-	var wg sync.WaitGroup
-	getSiteURL(main_url, &wg, maxGoroutinesSpawn)
+	getSiteURL(main_url, maxGoroutinesSpawn)
 
-	wg.Wait()
 	fmt.Println("Found", countChildUrl, "unique urls:\n")
 	fmt.Println("From", countRootUrl, "Root url:\n")
 }
