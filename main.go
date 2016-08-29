@@ -34,7 +34,7 @@ func fetchSite(url string, wg *sync.WaitGroup, done chan bool) {
 		mu.Unlock()
 	}
 
-	fmt.Println("---> Found : ", len(urls), "From : "+url+"\n")
+	fmt.Println("\n---> Found :", len(urls), "URL \nFrom : "+url+"\n")
 
 	<-time.After(3 * time.Second)
 	done <- true
