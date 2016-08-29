@@ -2,101 +2,95 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"github.com/fjw95/web-crawler/util"
 	"regexp"
 	"sync"
+	"time"
 )
 
 const (
 	main_url = "http://ub.ac.id/akademik/fakultas"
 )
 
-var count int
+var countChildUrl, countRootUrl int
 var mu sync.Mutex
 
-func removeDuplicates(elements []string) []string {
-	// Use map to record duplicates as we find them.
-	encountered := map[string]bool{}
-	result := []string{}
-
-	for v := range elements {
-		if encountered[elements[v]] != true {
-			/// Record this element as an encountered element.
-			encountered[elements[v]] = true
-			// Append to result slice.
-			result = append(result, elements[v])
-		}
-	}
-	// Return the new slice.
-	return result
-}
-
-func fetchSite(url string, wg *sync.WaitGroup) {
-
+func fetchSite(url string, wg *sync.WaitGroup, done chan bool) {
 	defer wg.Done()
-	client := &http.Client{}
-	resp, err := client.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	respBody, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	respBody, _ := util.GetRespBody(url)
+
 	pattern := regexp.MustCompile(url + "[a-z]+")
 	bodyStr := string(respBody[:])
 	found := pattern.FindAllString(bodyStr, -1)
 
-	urls := removeDuplicates(found)
+	urls := util.RemoveDuplicates(found)
 	urls = append(urls, url)
 
 	for _, urlList := range urls {
 		mu.Lock()
-		fmt.Println(urlList)
-		count++
+		fmt.Println("--> " + urlList)
+		countChildUrl++
 		mu.Unlock()
 	}
+
+	fmt.Println("---> Found : ", len(urls), "From : "+url+"\n")
+
+	<-time.After(3 * time.Second)
+	done <- true
 }
 
-func getSiteURL(mainURL string, wg *sync.WaitGroup) {
+func getSiteURL(mainURL string, wg *sync.WaitGroup, max int) {
 
-	client := &http.Client{}
-	res, err := client.Get(mainURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatal(err)
+	concurrentGoroutines := make(chan []string, max)
+	done := make(chan bool)
+	waitForAllJobs := make(chan bool)
+
+	defer close(concurrentGoroutines)
+
+	for i := 0; i < max; i++ {
+		concurrentGoroutines <- []string{}
 	}
 
-	bodyStr := string(body[:])
+	respBody, _ := util.GetRespBody(main_url)
+
+	bodyStr := string(respBody[:])
 	var pattern = regexp.MustCompile("http://" + "[a-z]+" + ".ub.ac.id/en")
-	var urlStr = pattern.FindAllString(bodyStr, -1)
 	var regexRep = regexp.MustCompile("en")
+	var urlStr = pattern.FindAllString(bodyStr, -1)
+
+	countRootUrl = len(urlStr)
+
+	wg.Add(countRootUrl)
+
+	go func() {
+		for i := 0; i < countRootUrl; i++ {
+			<-done
+
+			concurrentGoroutines <- []string{}
+		}
+		waitForAllJobs <- true
+	}()
 
 	for _, linkURL := range urlStr {
-		wg.Add(1)
-
 		strRep := regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
 
-		go fetchSite(linkURL, wg)
-
+		<-concurrentGoroutines
+		fmt.Println("Launch URL : " + linkURL + "\n")
+		go fetchSite(linkURL, wg, done)
 	}
+	<-waitForAllJobs
 
 }
 
 func main() {
 
-	// Deklarasi variabel waitGroup
+	maxGoroutinesSpawn := 3
 	var wg sync.WaitGroup
-	getSiteURL(main_url, &wg)
+	getSiteURL(main_url, &wg, maxGoroutinesSpawn)
 
 	wg.Wait()
-	fmt.Println("\nFound", count, "unique urls:\n")
+	fmt.Println("Found", countChildUrl, "unique urls:\n")
+	fmt.Println("From", countRootUrl, "Root url:\n")
 }
