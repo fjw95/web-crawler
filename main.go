@@ -1,20 +1,29 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"os"
 	"regexp"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/fjw95/web-crawler/util"
 )
 
-const (
-	main_url = "http://ub.ac.id/akademik/fakultas"
+var (
+	countChildUrl      int
+	countRootUrl       int
+	maxGoroutinesSpawn int
+	mu                 sync.Mutex
+	rootUrl            string
+	content_file       []string
 )
 
-var countChildUrl, countRootUrl int
-var mu sync.Mutex
+const (
+	path_file = "./work/src/github.com/fjw95/web-crawler/file/save/file-save.txt"
+)
 
 func fetchSite(url string, wg *sync.WaitGroup, slots chan bool) {
 	defer wg.Done()
@@ -28,14 +37,16 @@ func fetchSite(url string, wg *sync.WaitGroup, slots chan bool) {
 	urls := util.RemoveDuplicates(found)
 	urls = append(urls, url)
 
+	mu.Lock()
+	countChildUrlStr := strconv.Itoa(len(urls))
+	content_file = append(content_file, "Found "+countChildUrlStr+" URL, From "+url)
 	for _, urlList := range urls {
-		mu.Lock()
-		fmt.Println("--> " + urlList)
-		countChildUrl++
-		mu.Unlock()
-	}
 
-	fmt.Println("\n---> Found :", len(urls), "URL \nFrom : "+url+"\n")
+		content_file = append(content_file, urlList)
+		countChildUrl++
+	}
+	content_file = append(content_file, "")
+	mu.Unlock()
 
 	<-time.After(3 * time.Second)
 
@@ -56,7 +67,7 @@ func getSiteURL(mainURL string, max int) {
 		concurrentGoroutines <- true
 	}
 
-	respBody, _ := util.GetRespBody(main_url)
+	respBody, _ := util.GetRespBody(mainURL)
 	bodyStr := string(respBody[:])
 	var pattern = regexp.MustCompile("http://" + "[a-z]+" + ".ub.ac.id/en")
 	var regexRep = regexp.MustCompile("en")
@@ -78,13 +89,22 @@ func getSiteURL(mainURL string, max int) {
 	}
 
 	wg.Wait()
+
+	util.WriteFile(content_file, path_file)
+	fmt.Println("\nFound", countChildUrl, "unique urls\n")
+	fmt.Println("From", countRootUrl, "Root url\n")
 }
 
 func main() {
 
-	maxGoroutinesSpawn := 3
-	getSiteURL(main_url, maxGoroutinesSpawn)
+	flag.StringVar(&rootUrl, "url", "", "root url")
+	flag.IntVar(&maxGoroutinesSpawn, "max", 1, "max goroutines")
+	flag.Parse()
 
-	fmt.Println("Found", countChildUrl, "unique urls:\n")
-	fmt.Println("From", countRootUrl, "Root url:\n")
+	if rootUrl == "" {
+		fmt.Println("Cannot null URL Parameter")
+		os.Exit(-1)
+	} else {
+		getSiteURL(rootUrl, maxGoroutinesSpawn)
+	}
 }
