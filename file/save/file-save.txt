@@ -1,3 +1,22 @@
+Found 17 URL, From http://fia.ub.ac.id/
+http://fia.ub.ac.id/wp
+http://fia.ub.ac.id/feed
+http://fia.ub.ac.id/xmlrpc
+http://fia.ub.ac.id/blog
+http://fia.ub.ac.id/en
+http://fia.ub.ac.id/profil
+http://fia.ub.ac.id/pendidikan
+http://fia.ub.ac.id/penelitian
+http://fia.ub.ac.id/jaminan
+http://fia.ub.ac.id/kemahasiswaan
+http://fia.ub.ac.id/mahainfo
+http://fia.ub.ac.id/layanan
+http://fia.ub.ac.id/fasilitas
+http://fia.ub.ac.id/labbahasa
+http://fia.ub.ac.id/kontak
+http://fia.ub.ac.id/download
+http://fia.ub.ac.id/
+
 Found 34 URL, From http://fp.ub.ac.id/
 http://fp.ub.ac.id/wp
 http://fp.ub.ac.id/feed
@@ -34,26 +53,7 @@ http://fp.ub.ac.id/dosen
 http://fp.ub.ac.id/sitemap
 http://fp.ub.ac.id/
 
-Found 17 URL, From http://fia.ub.ac.id/
-http://fia.ub.ac.id/wp
-http://fia.ub.ac.id/feed
-http://fia.ub.ac.id/xmlrpc
-http://fia.ub.ac.id/blog
-http://fia.ub.ac.id/en
-http://fia.ub.ac.id/profil
-http://fia.ub.ac.id/pendidikan
-http://fia.ub.ac.id/penelitian
-http://fia.ub.ac.id/jaminan
-http://fia.ub.ac.id/kemahasiswaan
-http://fia.ub.ac.id/mahainfo
-http://fia.ub.ac.id/layanan
-http://fia.ub.ac.id/fasilitas
-http://fia.ub.ac.id/labbahasa
-http://fia.ub.ac.id/kontak
-http://fia.ub.ac.id/download
-http://fia.ub.ac.id/
-
-Found 25 URL, From http://fapet.ub.ac.id/
+Found 26 URL, From http://fapet.ub.ac.id/
 http://fapet.ub.ac.id/wp
 http://fapet.ub.ac.id/xmlrpc
 http://fapet.ub.ac.id/feed
@@ -66,6 +66,7 @@ http://fapet.ub.ac.id/sistem
 http://fapet.ub.ac.id/layanan
 http://fapet.ub.ac.id/fasilitas
 http://fapet.ub.ac.id/kontak
+http://fapet.ub.ac.id/daftar
 http://fapet.ub.ac.id/dosen
 http://fapet.ub.ac.id/english
 http://fapet.ub.ac.id/program
@@ -105,6 +106,25 @@ http://tp.ub.ac.id/manual
 http://tp.ub.ac.id/sop
 http://tp.ub.ac.id/category
 http://tp.ub.ac.id/
+
+Found 17 URL, From http://fisip.ub.ac.id/
+http://fisip.ub.ac.id/wp
+http://fisip.ub.ac.id/xmlrpc
+http://fisip.ub.ac.id/feed
+http://fisip.ub.ac.id/en
+http://fisip.ub.ac.id/profil
+http://fisip.ub.ac.id/pendidikan
+http://fisip.ub.ac.id/penelitian
+http://fisip.ub.ac.id/sistem
+http://fisip.ub.ac.id/layanan
+http://fisip.ub.ac.id/kemahasiswaan
+http://fisip.ub.ac.id/fasilitas
+http://fisip.ub.ac.id/kontak
+http://fisip.ub.ac.id/pengumuman
+http://fisip.ub.ac.id/kegiatan
+http://fisip.ub.ac.id/berita
+http://fisip.ub.ac.id/dekanat
+http://fisip.ub.ac.id/
 
 Found 42 URL, From http://mipa.ub.ac.id/
 http://mipa.ub.ac.id/wp
@@ -150,24 +170,31 @@ http://mipa.ub.ac.id/info
 http://mipa.ub.ac.id/sitemap
 http://mipa.ub.ac.id/
 
-Found 17 URL, From http://fisip.ub.ac.id/
-http://fisip.ub.ac.id/wp
-http://fisip.ub.ac.id/xmlrpc
-http://fisip.ub.ac.id/feed
-http://fisip.ub.ac.id/en
-http://fisip.ub.ac.id/profil
-http://fisip.ub.ac.id/pendidikan
-http://fisip.ub.ac.id/penelitian
-http://fisip.ub.ac.id/sistem
-http://fisip.ub.ac.id/layanan
-http://fisip.ub.ac.id/kemahasiswaan
-http://fisip.ub.ac.id/fasilitas
-http://fisip.ub.ac.id/kontak
-http://fisip.ub.ac.id/pengumuman
-http://fisip.ub.ac.id/kegiatan
-http://fisip.ub.ac.id/berita
-http://fisip.ub.ac.id/dekanat
-http://fisip.ub.ac.id/
+Found 24 URL, From http://fkg.ub.ac.id/
+http://fkg.ub.ac.id/wp
+http://fkg.ub.ac.id/feed
+http://fkg.ub.ac.id/xmlrpc
+http://fkg.ub.ac.id/en
+http://fkg.ub.ac.id/profil
+http://fkg.ub.ac.id/pendidikan
+http://fkg.ub.ac.id/penelitian
+http://fkg.ub.ac.id/sistem
+http://fkg.ub.ac.id/kemahasiswaan
+http://fkg.ub.ac.id/layanan
+http://fkg.ub.ac.id/fasilitas
+http://fkg.ub.ac.id/kontak
+http://fkg.ub.ac.id/category
+http://fkg.ub.ac.id/yudisium
+http://fkg.ub.ac.id/distance
+http://fkg.ub.ac.id/pelaksanaan
+http://fkg.ub.ac.id/sumpah
+http://fkg.ub.ac.id/sosialisasi
+http://fkg.ub.ac.id/pelatihan
+http://fkg.ub.ac.id/video
+http://fkg.ub.ac.id/halal
+http://fkg.ub.ac.id/buka
+http://fkg.ub.ac.id/pelantikan
+http://fkg.ub.ac.id/
 
 Found 5 URL, From http://fkh.ub.ac.id/
 http://fkh.ub.ac.id/wp
@@ -198,30 +225,4 @@ http://ppsub.ub.ac.id/pmpn
 http://ppsub.ub.ac.id/pdil
 http://ppsub.ub.ac.id/tpa
 http://ppsub.ub.ac.id/
-
-Found 24 URL, From http://fkg.ub.ac.id/
-http://fkg.ub.ac.id/wp
-http://fkg.ub.ac.id/feed
-http://fkg.ub.ac.id/xmlrpc
-http://fkg.ub.ac.id/en
-http://fkg.ub.ac.id/profil
-http://fkg.ub.ac.id/pendidikan
-http://fkg.ub.ac.id/penelitian
-http://fkg.ub.ac.id/sistem
-http://fkg.ub.ac.id/kemahasiswaan
-http://fkg.ub.ac.id/layanan
-http://fkg.ub.ac.id/fasilitas
-http://fkg.ub.ac.id/kontak
-http://fkg.ub.ac.id/category
-http://fkg.ub.ac.id/yudisium
-http://fkg.ub.ac.id/distance
-http://fkg.ub.ac.id/pelaksanaan
-http://fkg.ub.ac.id/sumpah
-http://fkg.ub.ac.id/sosialisasi
-http://fkg.ub.ac.id/pelatihan
-http://fkg.ub.ac.id/video
-http://fkg.ub.ac.id/halal
-http://fkg.ub.ac.id/buka
-http://fkg.ub.ac.id/pelantikan
-http://fkg.ub.ac.id/
 

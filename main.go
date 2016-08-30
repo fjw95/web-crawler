@@ -73,8 +73,8 @@ func getSiteURL(mainURL string, max int) {
 	var regexRep = regexp.MustCompile("en")
 	var urlStr = pattern.FindAllString(bodyStr, -1)
 
-	// sync with wait group
 	countRootUrl = len(urlStr)
+	// sync with wait group
 	wg.Add(countRootUrl)
 
 	for i, linkURL := range urlStr {
@@ -90,6 +90,7 @@ func getSiteURL(mainURL string, max int) {
 
 	wg.Wait()
 
+	// write to file
 	util.WriteFile(content_file, path_file)
 	fmt.Println("\nFound", countChildUrl, "unique urls\n")
 	fmt.Println("From", countRootUrl, "Root url\n")
