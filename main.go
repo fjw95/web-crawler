@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	countChildUrl      int
 	countRootUrl       int
 	maxGoroutinesSpawn int
 	mu                 sync.Mutex
@@ -36,16 +35,8 @@ func fetchSite(url string, wg *sync.WaitGroup, slots chan bool, result chan stri
 	for _, url := range urls {
 		result <- url
 	}
-	/*mu.Lock()
-	countChildUrlStr := strconv.Itoa(len(urls))
-	content_file = append(content_file, "Found "+countChildUrlStr+" URL, From "+url)
-	for _, urlList := range urls {
 
-		content_file = append(content_file, urlList)
-		countChildUrl++
-	}
-	content_file = append(content_file, "")
-	mu.Unlock()*/
+	result <- ""
 
 	<-time.After(3 * time.Second)
 
@@ -64,6 +55,8 @@ func getSiteURL(mainURL string, max int, target_file string) {
 	content_file := []string{}
 
 	defer close(concurrentGoroutines)
+	defer close(result)
+	defer close(allDone)
 
 	// fill initial slots
 	for i := 0; i < max; i++ {
@@ -80,6 +73,17 @@ func getSiteURL(mainURL string, max int, target_file string) {
 	// sync with wait group
 	wg.Add(countRootUrl)
 
+	go func() {
+		for {
+			select {
+			case <-allDone:
+				return
+			case res := <-result:
+				content_file = append(content_file, res)
+			}
+		}
+	}()
+
 	for i, linkURL := range urlStr {
 		strRep := regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
@@ -92,22 +96,12 @@ func getSiteURL(mainURL string, max int, target_file string) {
 
 	}
 
-	go func() {
-		select {
-		case <-allDone:
-			return
-		case res := <-result:
-			content_file = append(content_file, res)
-
-		}
-	}()
-
 	wg.Wait()
-	<-allDone
+	allDone <- true
 
 	// write to file
 	util.WriteFile(content_file, target_file)
-	fmt.Println("\nFound", countChildUrl, "unique urls\n")
+	fmt.Println("\nFound", len(content_file), "unique urls\n")
 	fmt.Println("From", countRootUrl, "Root url\n")
 }
 
