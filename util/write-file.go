@@ -13,6 +13,7 @@ func WriteFile(content_file []string, path_file string) {
 	if err != nil {
 		panic(err)
 	}
+	defer f.Close()
 
 	for _, url := range content_file {
 		f.WriteString(url + "\n")
