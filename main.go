@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	// "strconv"
 	"sync"
 	"time"
 
@@ -70,6 +69,17 @@ func getSiteURL(mainURL string, max int, target_file string) {
 	// sync with wait group
 	wg.Add(countRootUrl)
 
+	go func() {
+		for {
+			select {
+			case <-allDone:
+				return
+			case res := <-result:
+				content_file = append(content_file, res)
+			}
+		}
+	}()
+
 	for i, linkURL := range urlStr {
 		strRep := regexRep.ReplaceAllString(linkURL, "")
 		linkURL := strRep
@@ -81,16 +91,6 @@ func getSiteURL(mainURL string, max int, target_file string) {
 		go fetchSite(linkURL, &wg, concurrentGoroutines, result)
 
 	}
-	go func() {
-		for {
-			select {
-			case <-allDone:
-				return
-			case res := <-result:
-				content_file = append(content_file, res)
-			}
-		}
-	}()
 
 	wg.Wait()
 	allDone <- true
