@@ -8,7 +8,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/fjw95/web-crawler/email"
 	"github.com/fjw95/web-crawler/util"
+	"golang.org/x/net/context"
 )
 
 var (
@@ -95,8 +97,9 @@ func getSiteURL(mainURL string, max int, target_file string) {
 	wg.Wait()
 	allDone <- true
 
-	// write to file
-	util.WriteFile(content_file, target_file)
+	// store result to context value
+	ctx := context.WithValue(context.Background(), "result", content_file)
+	email.Send(ctx)
 	fmt.Println("\nFound", len(content_file), "unique urls\n")
 	fmt.Println("From", countRootUrl, "Root url\n")
 }
@@ -109,7 +112,7 @@ func main() {
 	flag.Parse()
 
 	if rootUrl == "" {
-		fmt.Println("Cannot null URL Parameter")
+		fmt.Println("Cannot nil URL Parameter")
 		os.Exit(-1)
 	} else {
 		getSiteURL(rootUrl, maxGoroutinesSpawn, targetFile)
