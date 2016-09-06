@@ -1,8 +1,6 @@
 package email
 
 import (
-	"fmt"
-
 	"golang.org/x/net/context"
 )
 
